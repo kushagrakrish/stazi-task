@@ -18,9 +18,9 @@ const CarList = ({ cars }) => {
 
           <div className='flex w-full items-center justify-between my-5'>
             <h3 className='text-4xl font-semibold text-gray-700'>{car.name}</h3>
-            <button className='text-base border-dashed font-bold border  text-gray-700 border-blue-800 border-spacing-y-32 py-1.5 px-2.5 rounded-md'>
+            <div className='text-base border-dashed font-bold border  text-gray-700 border-blue-800 border-spacing-y-32 py-1.5 px-2.5 rounded-md'>
               {car.year}
-            </button>
+            </div>
           </div>
           <div className='grid grid-cols-2 gap-3'>
             <div className='flex items-center gap-1.5'>
