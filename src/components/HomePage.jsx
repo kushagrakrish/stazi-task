@@ -1,34 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import SearchHeader from "../components/SearchHeader";
 import CarList from "./CarList";
-import SearchHeader from "./SearchHeader";
 
 const HomePage = ({ cars }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const searchParams = new URLSearchParams(location.search);
-  const initialSearchText = searchParams.get("search") || "";
-  const initialPage = parseInt(location.pathname.split("/")[2]) || 1;
-
-  const [searchText, setSearchText] = useState(initialSearchText);
-  const [currentPage, setCurrentPage] = useState(initialPage);
-
-  const [filteredCars, setFilteredCars] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const carsPerPage = 6;
   const indexOfLastCar = currentPage * carsPerPage;
   const indexOfFirstCar = indexOfLastCar - carsPerPage;
 
-  // Function to filter the 'cars' array based on the search text
-  const filterCars = () => {
-    const filtered = cars.filter((car) =>
-      car.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredCars(filtered);
-  };
-
-  // Update filteredCars whenever searchText changes
+  const filteredCars = cars.filter((car) =>
+    car.name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   const currentCars = filteredCars.slice(indexOfFirstCar, indexOfLastCar);
 
@@ -36,31 +22,22 @@ const HomePage = ({ cars }) => {
   const totalPages = 10;
 
   // Function to handle previous page navigation on click of button
-  useEffect(() => {
-    filterCars();
-    const searchParams = new URLSearchParams();
-    searchParams.set("search", searchText);
-    navigate(`/page/${currentPage}?${searchParams.toString()}`);
-  }, [searchText]);
-
-  // Inside the `goToPreviousPage` and `goToNextPage` functions
   const goToPreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
-      const searchParams = new URLSearchParams();
-      searchParams.set("search", searchText);
-      navigate(`/page/${currentPage - 1}?${searchParams.toString()}`);
     }
   };
 
+  // Function to handle next page navigation on click of button
   const goToNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
-      const searchParams = new URLSearchParams();
-      searchParams.set("search", searchText);
-      navigate(`/page/${currentPage + 1}?${searchParams.toString()}`);
     }
   };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchText]);
 
   return (
     <div className='bg-slate-100'>
@@ -75,12 +52,7 @@ const HomePage = ({ cars }) => {
             onClick={goToPreviousPage}
             className='bg-gray-300 px-3 py-1.5 rounded-xl '
           >
-            <Link
-              to={`/page/${currentPage - 1}?search=${searchText}`}
-              className='text-black'
-            >
-              <AiOutlineArrowLeft />
-            </Link>
+            <AiOutlineArrowLeft className='text-black' />
           </button>
           <div className='px-5'>
             {Array.from({ length: totalPages }).map((_, index) => (
@@ -98,16 +70,12 @@ const HomePage = ({ cars }) => {
               </Link>
             ))}
           </div>
+
           <button
             onClick={goToNextPage}
             className='bg-gray-300 px-3 py-1.5 rounded-xl '
           >
-            <Link
-              to={`/page/${currentPage + 1}?search=${searchText}`}
-              className={`btn ${currentPage === totalPages ? "hidden" : ""}`}
-            >
-              <AiOutlineArrowRight />
-            </Link>
+            <AiOutlineArrowRight />
           </button>
         </div>
       </div>
